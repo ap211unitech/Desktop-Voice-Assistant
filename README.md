@@ -15,6 +15,7 @@ pip install os
 pip install smtplib
 pip install pyjokes
 pip install time
+pip install winshell
 ```
 
 ## Usage

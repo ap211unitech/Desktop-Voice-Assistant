@@ -7,6 +7,8 @@ import os
 import smtplib
 import pyjokes
 import time
+import winshell
+import subprocess
 
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
@@ -89,7 +91,7 @@ if __name__ == '__main__':
         elif 'open interviewbit' in query:
             openWebBrowser('interviewbit.com')
 
-        elif 'open vscode' in query:
+        elif 'open vscode' in query or 'open vs code' in query:
             codePath = "C:\\Users\\AP\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe"
             os.startfile(codePath)
 
@@ -115,10 +117,13 @@ if __name__ == '__main__':
 
         elif 'search' in query:
             query = query.replace("search", "")
+            query = query.replace("for", "")
             openWebBrowser('https://www.google.com/search?q='+query)
 
-        elif 'play' in query:
+        elif 'play' in query or 'music' in query:
             query = query.replace("play", "")
+            query = query.replace("music", "")
+            query = query.replace("of", "")
             openWebBrowser('https://www.youtube.com/search?q='+query)
 
         elif "don't listen" in query or "stop listening" in query:
@@ -127,10 +132,23 @@ if __name__ == '__main__':
             time.sleep(a)
             print(a)
 
+        elif 'empty recycle bin' in query:
+            winshell.recycle_bin().empty(confirm=False, show_progress=False, sound=True)
+            speak("Recycle Bin Recycled")
+
+        elif 'shutdown system' in query:
+            speak("Hold On a Sec ! Your system is on its way to shut down")
+            subprocess.call('shutdown /p /f')
+            exit()
+
+        elif "hibernate" in query or "sleep" in query:
+            speak("Hibernating")
+            subprocess.call("shutdown /h")
+            exit()
+
         elif 'shutdown jarvis' in query or 'shutdown' in query:
             speak("Thanks for giving me your time sir")
             exit()
 
         else:
-            if query != 'none':
-                openWebBrowser('https://www.google.com/search?q='+query)
+            print('Sorry sir, I am unable to find this')
