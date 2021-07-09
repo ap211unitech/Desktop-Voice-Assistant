@@ -19,7 +19,9 @@ pip install time
 
 ## Usage
 
-After Installation , Run the python file and use it's various functionality.
+Make a password.txt file to store password of your email ID, and write your email ID in place of mine, in sendEmail function.
+
+After that, Run the python file and use it's various functionality.
 
 
 
