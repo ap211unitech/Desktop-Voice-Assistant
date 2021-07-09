@@ -4,11 +4,15 @@ import speech_recognition as sr
 import wikipedia
 import webbrowser
 import os
+import json
 import smtplib
 import pyjokes
 import time
 import winshell
 import subprocess
+from ecapture import ecapture as ec
+from urllib.request import urlopen
+
 
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
@@ -71,8 +75,16 @@ if __name__ == '__main__':
     while True:
         # query = input()
         query = takeCommand().lower()
-        if 'greet me' in query:
+        if 'greet me' in query or 'wish me' in query:
             wiseMe()
+
+        elif 'who are you' in query or 'what can you do' in query:
+            speak('''I am Jarvis, version 1 point O, your personal assistant. I am programmed to do some daily tasks like
+                  opening youtube, google chrome, gmail and stackoverflow, take a photo, search wikipedia, predict weather in different cities, get top headline news etc. but I can do further more tasks,
+                  I am under progress till now''')
+
+        elif "who made you" in query or "who created you" in query or "who discovered you" in query:
+            speak("I was built by Arjun")
 
         elif "wikipedia" in query:
             speak('Searching Wikipedia...')
@@ -87,6 +99,9 @@ if __name__ == '__main__':
 
         elif 'open google' in query:
             openWebBrowser('google.com')
+
+        elif 'open gmail' in query:
+            openWebBrowser("gmail.com")
 
         elif 'open interviewbit' in query:
             openWebBrowser('interviewbit.com')
@@ -125,6 +140,55 @@ if __name__ == '__main__':
             query = query.replace("music", "")
             query = query.replace("of", "")
             openWebBrowser('https://www.youtube.com/search?q='+query)
+
+        elif 'news' in query:
+            try:
+                jsonObj = urlopen(
+                    '''https://newsapi.org/v1/articles?source=the-times-of-india&sortBy=top
+                    &apiKey=f599182c822d4b7dbad3e2d30d608385''')
+                data = json.load(jsonObj)
+                i = 1
+
+                speak('here are some top news from the times of india')
+                print('''=============== TIMES OF INDIA ============''' + '\n')
+
+                for item in data['articles']:
+                    print(str(i) + '. ' + item['title'] + '\n')
+                    print(item['description'] + '\n')
+                    speak(str(i) + '. ' + item['title'] + '\n')
+                    i += 1
+            except Exception as e:
+                print(str(e))
+
+        elif "write a note" in query or "take a note" in query:
+            speak("What should i write, sir")
+            note = takeCommand()
+            file = open('jarvis.txt', 'w')
+            speak("Sir, Should i include date and time")
+            snfm = takeCommand()
+            if 'yes' in snfm or 'sure' in snfm:
+                strDateTime = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+                file.write(strDateTime)
+                file.write(" :- ")
+                file.write(note)
+            else:
+                file.write(note)
+            speak('Note Taken')
+
+        elif "show note" in query or "show my previous note" in query:
+            speak("Showing Notes")
+            file = open("jarvis.txt", "r")
+
+            note = file.read()
+            print(note)
+            try:
+                k = int(note[0])
+                speak('You have written, '+note[24:])
+            except:
+                speak('You have written, '+note)
+
+        elif "camera" in query or "take a photo" in query:
+            ec.capture(0, "Jarvis Camera ", "img.jpg")
 
         elif "don't listen" in query or "stop listening" in query:
             speak("for how much time you want to stop jarvis from listening commands")
